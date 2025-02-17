@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+.custom-pdf-viewer {
+  background-color: white !important; /* Ensures the entire PDF viewer bg is white */
+}
+
+.custom-pdf-viewer > div {
+  background-color: white !important; /* Applies white bg to inner container */
+}
+
+.custom-pdf-viewer iframe {
+  background-color: white !important; /* Makes the iframe itself white */
+}
