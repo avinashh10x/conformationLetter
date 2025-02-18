@@ -29,7 +29,7 @@ function EditLetter({ letterData, onUpdateSuccess }) {
         <div>
             <button
                 onClick={() => setShowModal(true)}
-                className="bg-[#684df4]  text-white px-4 py-2 rounded-lg w-full flex justify-between hover:bg-blue-600 transition duration-300"
+                className="bg-[#684df4] cursor-pointer mb-2  text-white px-4 py-2 rounded-lg w-full flex justify-between hover:bg-blue-600 transition duration-300"
             >
                 Edit
                 <PencilSquareIcon className="h-6 w-6" />

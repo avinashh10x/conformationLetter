@@ -9,9 +9,9 @@ function ToolBar() {
   const { selectedLetter } = useContext(MyContext)
   
   return (
-    <div className=' w-full flex justify-end items-center p-5'>
+    <div className=' w-full flex bg-[#525659] justify-end items-center p-5'>
       <PDFDownloadLink document={<LetterPDF selectedLetter={selectedLetter}/>} fileName={`${selectedLetter?.name || 'ConfirmationLetter'}.pdf`}>
-        <FolderArrowDownIcon className='size-10 mx-5 text-gray-600 cursor-pointer hover:text-gray-700 duration-500' />
+        <FolderArrowDownIcon className='size-10 mx-5 text-white cursor-pointer hover:text-gray-400 duration-300' />
       </PDFDownloadLink>
 
     </div>

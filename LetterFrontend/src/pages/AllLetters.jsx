@@ -1,16 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { getAllLetters } from "../services/LetterServices";
 import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
 import Loading from "../component/Loading";
 import DeleteLetter from "../component/DeleteLetter";
 import EditLetter from "../component/EditLetter";
+import { MyContext } from "../context/LetterContext";
+import { useNavigate } from "react-router-dom";
 
 function AllLetters() {
   const [letters, setLetters] = useState(null);
+  const { setSelectedLetter } = useContext(MyContext);
+
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [menuOpen, setMenuOpen] = useState(null);
-  const limit = 10; 
+  const navigate = useNavigate();
+  const limit = 10;
 
   useEffect(() => {
     const fetchLetters = async () => {
@@ -19,13 +24,18 @@ function AllLetters() {
         console.log("Fetched Data:", data);
 
         setLetters(data || []);
-        setTotalPages(Math.ceil((data.totalCount || 1) / limit)); 
+        setTotalPages(Math.ceil((data.totalCount || 1) / limit));
       } catch (error) {
         console.error("Error fetching letters:", error);
       }
     };
     fetchLetters();
   }, [page]);
+
+  const handleClick = (letter) => {
+    setSelectedLetter(letter);
+    navigate('/letter');
+  }
 
   const toggleMenu = (letterId) => {
     setMenuOpen(menuOpen === letterId ? null : letterId);
@@ -39,7 +49,8 @@ function AllLetters() {
           letters.map((letter) => (
             <div
               key={letter._id}
-              className="relative bg-white shadow-lg rounded-lg p-6 border border-gray-300 hover:shadow-xl transition duration-200"
+              onClick={() => handleClick(letter)}
+              className="relative bg-white shadow-lg cursor-pointer rounded-lg p-6 border border-gray-300 hover:shadow-xl transition duration-200"
             >
               <h3 className="text-lg font-semibold text-indigo-600">{letter.name || "N/A"}</h3>
               <p className="text-gray-700 text-sm">Father's Name: <b>{letter.FatherName || "N/A"}</b></p>
@@ -51,13 +62,20 @@ function AllLetters() {
               <div className="absolute top-3 right-3">
                 <EllipsisVerticalIcon
                   className="h-5 w-5 text-gray-500 cursor-pointer"
-                  onClick={() => toggleMenu(letter._id)}
+                  onClick={(e) => {
+                    e.stopPropagation(); 
+                    toggleMenu(letter._id);
+                  }}
                 />
                 {menuOpen === letter._id && (
-                  <div className="absolute right-0 top-6 bg-white shadow-md rounded-lg p-2 border border-gray-300 w-32">
+                  <div
+                    className="absolute cursor-pointer right-0 top-6 bg-white shadow-md rounded-lg p-2 border border-gray-300 w-32"
+                    onClick={(e) => e.stopPropagation()} 
+                  >
                     <EditLetter letterData={letter} />
                     <DeleteLetter referenceNo={letter.ReferenceNo} />
                   </div>
+
                 )}
               </div>
             </div>
