@@ -16,7 +16,7 @@ const letterSchema = new mongoose.Schema({
     rollNo: {
         type: String,
         required: [true, "Roll Number is required"],
-        unique: true, 
+        unique: true,
         // match: [/^[A-Za-z0-9]+$/, "Roll number must be alphanumeric"]
     },
     gender: {
@@ -31,25 +31,32 @@ const letterSchema = new mongoose.Schema({
     },
     enrollmentDate: {
         type: Date,
-        required: [true, "Enrollment Date is required"],
-    },    
+        required: [true, "Enrollment Date is required"], //validator
+    },
     trainingPeriod: {
         type: String,
-        enum: ['6 months', '45 days'],
+        enum: ['6 months', '45 days', '21 days', '30 days'],
         required: [true, "Training Period is required"],
         match: [/^\d+\s(days|months)$/, "Training period must be in 'X months' or 'X days' format"]
     },
-    collageName: {
+    collegeName: {
         type: String,
-        required: [true, "Collage Name is required"],
+        required: [true, "college Name is required"],
         trim: true
     },
     ReferenceNo: {
         type: String,
         required: [true, "Reference Number is required"],
-        unique: true, 
+        unique: true,
         // match: [/^REF\d{8}$/, "Reference Number must start with 'REF' followed by 8 digits"]
     }
 }, { timestamps: true });
 
+
+letterSchema.index({ name: 'text', FatherName: 'text' });
+letterSchema.index({courseName: 'text', collegeName: 'text'});
+letterSchema.index({collegeName: 'text'});
+
+
 module.exports = mongoose.model('Letter', letterSchema);
+

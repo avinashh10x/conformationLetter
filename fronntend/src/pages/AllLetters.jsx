@@ -6,6 +6,8 @@ import DeleteLetter from "../component/DeleteLetter";
 import EditLetter from "../component/EditLetter";
 import { MyContext } from "../context/LetterContext";
 import { useNavigate } from "react-router-dom";
+import CreateBtn from "../component/CreateBtn";
+import FilterBtn from "../component/FilterBtn";
 
 function AllLetters() {
   const [letters, setLetters] = useState(null);
@@ -15,22 +17,25 @@ function AllLetters() {
   const [totalPages, setTotalPages] = useState(1);
   const [menuOpen, setMenuOpen] = useState(null);
   const navigate = useNavigate();
-  const limit = 10;
+
+
+  const limit = 9;
 
   useEffect(() => {
     const fetchLetters = async () => {
       try {
-        const data = await getAllLetters(page, limit);
-        console.log("Fetched Data:", data);
+        const response = await getAllLetters(page, limit); // Ensure API is called with page & limit
+        console.log("Fetched Data:", response);
 
-        setLetters(data || []);
-        setTotalPages(Math.ceil((data.totalCount || 1) / limit));
+        setLetters(response.letters || []);
+        setTotalPages(Math.ceil((response.totalCount || 1) / limit));
       } catch (error) {
         console.error("Error fetching letters:", error);
       }
     };
     fetchLetters();
   }, [page]);
+
 
   const handleClick = (letter) => {
     setSelectedLetter(letter);
@@ -41,16 +46,24 @@ function AllLetters() {
     setMenuOpen(menuOpen === letterId ? null : letterId);
   };
 
+
   return (
     <div className="container mx-auto p-6">
-      <h2 className="text-2xl font-bold text-center mb-6">All Letters</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex items-center justify-center">
+        <div className="flex mb-2 items-center justify-between w-full p-4">
+          <CreateBtn />
+          <h2 className="text-4xl uppercase font-bold text-center">All Letters</h2>
+          <FilterBtn />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-gray-200 min-h-[calc(100vh-268px)] rounded-2xl p-4 gap-4">
         {letters ? (
           letters.map((letter) => (
             <div
               key={letter._id}
               onClick={() => handleClick(letter)}
-              className="relative bg-white shadow-lg cursor-pointer rounded-lg p-6 border border-gray-300 hover:shadow-xl transition duration-200"
+              className="relative bg-white h-48  shadow-lg cursor-pointer rounded-lg p-6 border border-gray-300 hover:shadow-xl transition duration-200"
             >
               <h3 className="text-lg font-semibold text-indigo-600">{letter.name || "N/A"}</h3>
               <p className="text-gray-700 text-sm">Father's Name: <b>{letter.FatherName || "N/A"}</b></p>
@@ -63,14 +76,14 @@ function AllLetters() {
                 <EllipsisVerticalIcon
                   className="h-5 w-5 text-gray-500 cursor-pointer"
                   onClick={(e) => {
-                    e.stopPropagation(); 
+                    e.stopPropagation();
                     toggleMenu(letter._id);
                   }}
                 />
                 {menuOpen === letter._id && (
                   <div
                     className="absolute cursor-pointer right-0 top-6 bg-white shadow-md rounded-lg p-2 border border-gray-300 w-32"
-                    onClick={(e) => e.stopPropagation()} 
+                    onClick={(e) => e.stopPropagation()}
                   >
                     <EditLetter letterData={letter} />
                     <DeleteLetter referenceNo={letter.ReferenceNo} />
@@ -85,7 +98,7 @@ function AllLetters() {
         )}
       </div>
 
-      <div className="flex justify-center mt-6">
+      <div className="flex justify-center mt-6 relative bottom-0 w-full">
         <button
           className="px-4 py-2 bg-gray-300 rounded-md cursor-pointer mr-2"
           disabled={page === 1}
@@ -96,7 +109,7 @@ function AllLetters() {
         <span className="px-4 py-2">Page {page} of {totalPages}</span>
         <button
           className="px-4 py-2 bg-gray-300 rounded-md ml-2 disabled:opacity-50"
-          disabled={page >= totalPages}
+          disabled={page === totalPages}
           onClick={() => setPage(page + 1)}
         >
           Next

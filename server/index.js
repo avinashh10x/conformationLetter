@@ -4,7 +4,7 @@ const cors = require('cors');
 const connectDb = require('./utils/Db');
 const letterRoutes = require('./routes/letterRoutes');
 
-  
+
 const app = express();
 
 connectDb();

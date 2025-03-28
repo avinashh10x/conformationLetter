@@ -7,10 +7,12 @@ export const MyContext = createContext();
 export const MyProvider = ({ children }) => {
   const [selectedLetter, setSelectedLetter] = useState(() => {
     const savedLetter = localStorage.getItem("selectedLetter");
-    return savedLetter ? JSON.parse(savedLetter) : null;
+    return savedLetter ? JSON.parse(savedLetter) :  null;
   });
 
   const [letters, setLetters] = useState([]);
+  const [searchResults, setSearchResults] = useState([]);
+
 
   useEffect(() => {
     if (selectedLetter) {
@@ -31,10 +33,9 @@ export const MyProvider = ({ children }) => {
     fetchLetters();
   }, []);
 
-  const name = "avinash"
 
   return (
-    <MyContext.Provider value={{ selectedLetter, setSelectedLetter, fetchLetters, letters, setLetters,name }}>
+    <MyContext.Provider value={{ selectedLetter, setSelectedLetter, fetchLetters, letters, setLetters,name, searchResults, setSearchResults }}>
       {children}
     </MyContext.Provider>
   );

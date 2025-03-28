@@ -1,7 +1,5 @@
 
 import Loading from '../component/Loading';
-// import signature from '../assets/signature.jpg';
-// import NCimg from '../assets/novem_controls-removebg-preview.webp'
 import ToolBar from '../component/ToolBar';
 import { useContext } from 'react';
 import { MyContext } from '../context/LetterContext';
@@ -20,11 +18,14 @@ function LetterLayout() {
 
   return (
 
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-black">
       <ToolBar />
       <PDFViewer className="custom-pdf-viewer" width="100%" height="1200px" showToolbar={false}>
-        <LetterPDF selectedLetter={selectedLetter} />
+        {/* <LetterPDF selectedLetter={selectedLetter} /> */}
+        <LetterPDF />
       </PDFViewer>
+
+    
     </div>
 
 

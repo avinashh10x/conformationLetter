@@ -17,7 +17,7 @@ function RecentLetter() {
     const fetchLetters = async () => {
       try {
         const data = await getAllLetters();
-        setLetters(data);
+        setLetters(data.letters);
       } catch (error) {
         console.error("Error fetching letters:", error);
       }
@@ -61,7 +61,7 @@ function RecentLetter() {
               <h4 className="text-xl font-semibold">{letter.name || "N/A"}</h4>
               <p className="text-sm text-gray-600">Father's Name: <b>{letter.FatherName || "N/A"}</b></p>
               <p className="text-sm text-gray-600">Ref No: {letter.ReferenceNo || "N/A"}</p>
-              <p className="text-sm text-gray-600">Collage Name: {letter.collageName || "N/A"}</p>
+              <p className="text-sm text-gray-600">college Name: {letter.collegeName || "N/A"}</p>
               <p className="text-sm text-gray-600">Roll No: {letter.rollNo || "N/A"}</p>
               <p className="text-sm text-gray-600">Course: {letter.courseName || "N/A"}</p>
             </div>

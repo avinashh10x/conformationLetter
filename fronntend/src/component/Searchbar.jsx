@@ -1,11 +1,11 @@
 import React, { useState, useContext } from "react";
 import { MyContext } from "../context/LetterContext";
-import { getSingleLetter } from "../services/LetterServices";
+import { getSearchedLetter } from "../services/LetterServices";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { useNavigate } from "react-router-dom";
 
 function SearchBar() {
-    const { setSelectedLetter } = useContext(MyContext);
+    const { setSearchResults } = useContext(MyContext);
     const [searchTerm, setSearchTerm] = useState("");
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -19,18 +19,18 @@ function SearchBar() {
         setError(null);
 
         try {
-            const data = await getSingleLetter(searchTerm);
+            const data = await getSearchedLetter(searchTerm);
+            console.log('Fetched data:', data); 
             if (data) {
-        
-              
-                console.log(data);
-                navigate(`/letter`); 
+                await setSearchResults(data);
+                navigate("/result", { state: { keyword: searchTerm } });
             } else {
                 setError("Letter not found");
             }
         } catch (err) {
-            setError("Error fetching letter");
+            setError("Error fetching letter", err);
         }
+
     };
 
     return (

@@ -21,7 +21,7 @@ function EditLetter({ letterData, onUpdateSuccess }) {
             setShowModal(false);
             onUpdateSuccess(formData);
         } catch (error) {
-            alert("Error updating letter.");
+            alert("Error updating letter.", error.message);
         }
     };
 
@@ -100,10 +100,10 @@ function EditLetter({ letterData, onUpdateSuccess }) {
                             />
                             <input
                                 type="text"
-                                name="collageName"
-                                value={formData.collageName}
+                                name="collegeName"
+                                value={formData.collegeName}
                                 onChange={handleChange}
-                                placeholder="Collage Name"
+                                placeholder="college Name"
                                 required
                                 className="w-full p-3 border rounded-lg"
                             />
@@ -136,7 +136,7 @@ function EditLetter({ letterData, onUpdateSuccess }) {
                                 disabled
                                 className="w-full p-3 border rounded-lg bg-gray-200 cursor-not-allowed"
                             />
-                          
+
 
                             <div className="col-span-2 mt-4 flex justify-between">
                                 <button

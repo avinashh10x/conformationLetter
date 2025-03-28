@@ -1,13 +1,15 @@
 import React from 'react'
 import { UserIcon } from '@heroicons/react/24/solid'
+import logoImg from '../assets/novem_controls-removebg-preview.jpg';
+
 
 function Navbar() {
     return (
         <>
-            <nav className='flex justify-between items-center p-5 bg-[#684df4] text-white'>
+            <nav className='flex justify-between items-center p-5 bg-[#af9fff] text-white'>
                 <div className='h-15 w-50 items-center justify-center flex'>
                     <a href="/">
-                        <img className='h-full w-full object-cover' src="https://novemcontrols.com/wp-content/uploads/2024/02/novem_controls-removebg-preview.png" alt="novem controls" />
+                        <img className='h-full w-full object-cover' src={logoImg} alt="novem controls" />
                     </a>
                 </div>
 
