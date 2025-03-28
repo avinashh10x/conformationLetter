@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:3000/api";
-// const API_URL = "https://confirmationletter.onrender.com/api";
+// const API_URL = "http://localhost:3000/api";
+const API_URL = "https://maqusad.onrender.com/api";
 
 //  Get all Letters
 const getAllLetters = async (page = 1, limit = 5) => {
