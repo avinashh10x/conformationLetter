@@ -2,6 +2,7 @@ import React, { useContext, useState } from "react";
 import { updateLetter } from "../services/LetterServices";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { MyContext } from "../context/LetterContext";
+import toast from "react-hot-toast";
 
 function EditLetter({ letterData, onUpdateSuccess }) {
     const { fetchLetters } = useContext(MyContext);
@@ -17,11 +18,12 @@ function EditLetter({ letterData, onUpdateSuccess }) {
         try {
             await updateLetter(formData);
             await fetchLetters();
-            alert("Letter updated successfully!");
+            toast.success("Letter updated successfully!");
             setShowModal(false);
             onUpdateSuccess(formData);
         } catch (error) {
-            alert("Error updating letter.", error.message);
+            console.log("Error updating letter.", error);
+            toast.error("Error updating letter.");
         }
     };
 
