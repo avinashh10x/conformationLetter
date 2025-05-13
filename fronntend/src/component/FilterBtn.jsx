@@ -36,7 +36,7 @@ function FilterBtn() {
                 return;
             }
             await setSearchResults(filteredLettersFromApi);
-            navigate("/result", { state: {collegeName,courseName} });
+            navigate("/result", { state: { collegeName, courseName } });
 
 
             //    console.log();
@@ -51,7 +51,10 @@ function FilterBtn() {
     return (
         <div>
             <button
-                className="bg-[#684df4] text-white cursor-pointer flex items-center justify-center gap-2 py-3 px-6 rounded-lg text-lg font-medium hover:bg-blue-600 transition duration-300 shadow-lg"
+                className="w-full bg-[#684df4] text-white cursor-pointer flex items-center justify-center gap-2 
+             py-2 px-4 text-base 
+             sm:py-3 sm:px-6 sm:text-lg
+             rounded-lg font-medium hover:bg-blue-600 transition duration-300 shadow-lg"
                 onClick={() => setShowModal(true)}
             >
                 Filter Letter

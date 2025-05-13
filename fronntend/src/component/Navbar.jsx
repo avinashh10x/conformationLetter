@@ -1,9 +1,12 @@
 import React from 'react'
-import { UserIcon } from '@heroicons/react/24/solid'
+import { PlusCircleIcon, PlusIcon, UserIcon } from '@heroicons/react/24/solid'
 import logoImg from '../assets/novem_controls-removebg-preview.jpg';
+import CreateCollageBtn from './createCollageBtn';
 
 
 function Navbar() {
+
+
     return (
         <>
             <nav className='flex justify-between items-center p-5 bg-[#af9fff] text-white'>
@@ -14,7 +17,7 @@ function Navbar() {
                 </div>
 
                 <div className='flex h-10 justify-center w-10 border-1 rounded-4xl items-center mr-2  space-x-5'>
-                    <UserIcon className="size-9 p-1" />
+                    <CreateCollageBtn/>
                 </div>
             </nav>
         </>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API_URL = "http://localhost:3000/api";
-const API_URL = "https://maqusad.onrender.com/api";
+const API_URL = "http://localhost:3000/api";
+// const API_URL = "https://maqusad.onrender.com/api";
 
 //  Get all Letters
 const getAllLetters = async (page = 1, limit = 5) => {
@@ -33,13 +33,13 @@ const createLetter = async (letterData) => {
 
 const getSearchedLetter = async (searchTerm1, searchTerm2) => {
     try {
-        const response = await axios.post(`${API_URL}/getSearchedLetter`, { 
-            queryValue1: searchTerm1, 
-            queryValue2: searchTerm2 
+        const response = await axios.post(`${API_URL}/getSearchedLetter`, {
+            queryValue1: searchTerm1,
+            queryValue2: searchTerm2
         });
 
         console.log(response.data);
-        
+
 
         return response.data.letter;
     } catch (error) {
@@ -75,11 +75,33 @@ const deleteLetter = async (referenceNo) => {
     }
 };
 
+const getCollageNames = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/getAllColleges`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching college names:", error);
+        throw error;
+    }
+};
+
+const saveCollageName = async (collageName) => {
+    try {
+        const response = await axios.post(`${API_URL}/savecollage`, { collegeName: collageName });
+        return response.data;
+    } catch (error) {
+        console.error("Error saving college name:", error);
+        throw error;
+    }
+}
+
 
 export {
     getAllLetters,
     createLetter,
     getSearchedLetter,
     updateLetter,
-    deleteLetter
+    deleteLetter,
+    getCollageNames,
+    saveCollageName
 };

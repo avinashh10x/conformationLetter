@@ -55,6 +55,20 @@ const styles = StyleSheet.create({
 
 
 function MyDocument({ selectedLetter }) {
+
+  const getTrainingEndDate = (startDate, period) => {
+    const date = new Date(startDate);
+    if (period.toLowerCase().includes('45')) {
+      date.setDate(date.getDate() + 45);
+    } else if (period.toLowerCase().includes('60')) {
+      date.setDate(date.getDate() + 60);
+    } else if (period.toLowerCase().includes('6 month')) {
+      date.setMonth(date.getMonth() + 6);
+    }
+    return date.toLocaleDateString('en-GB');
+  };
+
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -92,31 +106,34 @@ function MyDocument({ selectedLetter }) {
             <Text style={{ marginTop: 10 }}>
               We are pleased to inform you that <Text style={styles.textBold}>{selectedLetter.name || "[Student Name]"}</Text>
               {selectedLetter.gender === 'female' ? ' D/O ' : ' S/O '}
-              <Text style={styles.textBold}>{selectedLetter.FatherName || "Father Name"}</Text> has been successfully enrolled
+              <Text style={styles.textBold}>Shri {selectedLetter.FatherName || "Father Name"}</Text> has been successfully enrolled
               in our <Text style={{ fontWeight: 'bold' }}>{selectedLetter.trainingPeriod}</Text> industrial internship program from <Text style={styles.textBold}>
                 {new Date(selectedLetter.enrollmentDate).toLocaleDateString('en-GB')}
-              </Text> in our esteemed organization.
-            </Text>
-            <Text style={{ marginTop: 10 }}>
-              During the training, the student will have the opportunity to work on various projects and gain hands-on
-              experience in their chosen field. Our team is eager to mentor and support students throughout the
-              internship, and we encourage students to actively participate in our daily activities.
-            </Text>
-            <Text style={{ marginTop: 10 }}>
-              The management will assess the candidate’s performance throughout this period. We look forward to a
-              productive and enriching 6 months ahead with the candidate.
-            </Text>
-          </View>
+              </Text> to <Text style={styles.textBold}>
+                {getTrainingEndDate(selectedLetter.enrollmentDate, selectedLetter.trainingPeriod)} 
+              </Text> in our esteemed organization.</Text>
 
-          <View style={styles.footer}>
-            <Text>Best regards,</Text>
-            <Text>Yours Faithfully,</Text>
-            <Text>For <Text style={styles.textBold}>NOVEM CONTROLS</Text></Text>
-            <Image src={signature} style={styles.signature} />
-          </View>
+
+          <Text style={{ marginTop: 10 }}>
+            During the training, the student will have the opportunity to work on various projects and gain hands-on
+            experience in their chosen field. Our team is eager to mentor and support students throughout the
+            internship, and we encourage students to actively participate in our daily activities.
+          </Text>
+          <Text style={{ marginTop: 10 }}>
+            The management will assess the candidate’s performance throughout this period. We look forward to a
+            productive and enriching 6 months ahead with the candidate.
+          </Text>
         </View>
-      </Page>
-    </Document>
+
+        <View style={styles.footer}>
+          <Text>Best regards,</Text>
+          <Text>Yours Faithfully,</Text>
+          <Text>For <Text style={styles.textBold}>NOVEM CONTROLS</Text></Text>
+          <Image src={signature} style={styles.signature} />
+        </View>
+      </View>
+    </Page>
+    </Document >
   );
 }
 

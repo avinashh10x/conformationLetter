@@ -6,6 +6,7 @@ import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import EditLetter from '../component/EditLetter';
 import DeleteLetter from '../component/DeleteLetter';
 import { useLocation } from "react-router-dom";
+import SearchBar from '../component/Searchbar';
 
 function ResultPage() {
     const { setSelectedLetter, searchResults } = useContext(MyContext)
@@ -33,10 +34,15 @@ function ResultPage() {
 
     return (
         <div className="container mx-auto p-6">
-            <h2 className="text-2xl text-center mb-6">
-                {keyword ? `Search Results for: "${keyword}"` : ""}
+            {/* <SearchBar/> */}
+            {keyword && <h2 className="text-2xl text-center mb-6" >Search Results for: <span className='font-bold'> {keyword}</span></h2>}
+            {collegeName || courseName && <h2 className="text-2xl text-center mb-6">Filtered by: <span className='font-bold'>{collegeName || ""} {courseName || ""}</span> </h2>}
+            {/* <h2 className="text-2xl text-center mb-6">
+                {keyword ?  `Search Results for: "${keyword}"` : ""}
+
                 {collegeName || courseName ? `Filtered by: ${collegeName || ""} ${courseName || ""}` : ""}
-            </h2>
+
+            </h2> */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-gray-200 min-h-[calc(100vh-268px)] rounded-2xl p-4 gap-4">
 
                 {searchResults ? (

@@ -20,7 +20,7 @@ function SearchBar() {
 
         try {
             const data = await getSearchedLetter(searchTerm);
-            console.log('Fetched data:', data); 
+            console.log('Fetched data:', data);
             if (data) {
                 await setSearchResults(data);
                 navigate("/result", { state: { keyword: searchTerm } });
@@ -35,16 +35,16 @@ function SearchBar() {
 
     return (
         <div className="flex flex-col items-center w-full max-w-full px-4 my-8">
-            <form onSubmit={handleSubmit} className="flex items-center w-full max-w-3xl mx-auto rounded-2xl bg-gray-400">
+            <form onSubmit={handleSubmit} className="flex items-center focus:border-2 focus:border-red-400 w-full max-w-3xl mx-auto rounded-2xl bg-gray-300">
                 <input
                     type="text"
-                    placeholder="Enter Reference No..."
+                    placeholder="Search By any Name, Father Name, Roll No, Reference No (last 3 digits)"
                     value={searchTerm}
                     onChange={(e) => {
                         setSearchTerm(e.target.value);
                         setError(null);
                     }}
-                    className="h-12 flex-1 px-4 rounded-l-2xl font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    className="h-12 flex-1 px-4 rounded-l-2xl  font-medium focus:outline-none focus:ring-2 focus:ring-blue-400"
                     aria-label="Search Reference Number"
                 />
                 <button
@@ -56,6 +56,8 @@ function SearchBar() {
                 </button>
             </form>
             {error && <div className="mt-2 text-sm text-red-600">{error}</div>}
+            
+
         </div>
     );
 }

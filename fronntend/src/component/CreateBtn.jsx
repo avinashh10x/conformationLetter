@@ -3,6 +3,8 @@ import { createLetter, getAllLetters } from '../services/LetterServices';
 import { data, useNavigate } from 'react-router-dom';
 import { MyContext } from '../context/LetterContext';
 import { PlusIcon } from '@heroicons/react/24/solid';
+import SelectCollege from './SelectCollege';
+import toast from 'react-hot-toast';
 
 function CreateBtn() {
     const [showModal, setShowModal] = useState(false);
@@ -31,12 +33,14 @@ function CreateBtn() {
 
             setSelectedLetter(newLetter);
 
-            alert('Letter created successfully');
+
+            toast.success("Letter created successfully");
             setShowModal(false);
 
             navigate('/letter');
         } catch (error) {
-            alert('Error creating letter', error);
+            console.error('Error creating letter:', error);
+            toast.error("Error creating letter");
         }
     };
 
@@ -45,11 +49,15 @@ function CreateBtn() {
         <div>
             <button
                 onClick={() => setShowModal(true)}
-                className="bg-[#684df4] text-white cursor-pointer flex items-center justify-center gap-2 py-3 px-6 rounded-lg text-lg font-medium hover:bg-blue-600 transition duration-300 shadow-lg"
+                className="w-full bg-[#684df4] text-white cursor-pointer flex items-center justify-center gap-2 
+             py-2 px-4 text-base 
+             sm:py-3 sm:px-6 sm:text-lg
+             rounded-lg font-medium hover:bg-blue-600 transition duration-300 shadow-lg"
             >
                 Create Letter
-                <PlusIcon className="h-6 w-6 text-white" />
+                <PlusIcon className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
             </button>
+
 
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
@@ -62,6 +70,7 @@ function CreateBtn() {
                         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-700">Create Letter</h2>
                         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
 
+                            {/* <label htmlFor="name">name</label> */}
                             <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Name" required className="w-full p-3 border rounded-lg" />
 
                             <input type="text" name="FatherName" value={formData.FatherName} onChange={handleChange} placeholder="Father's Name" required className="w-full p-3 border rounded-lg" />
@@ -77,7 +86,7 @@ function CreateBtn() {
 
                             <input type="text" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="Course Name" required className="w-full p-3 border rounded-lg" />
 
-                            <select
+                            {/* <select
                                 name="collegeName"
                                 value={formData.collegeName}
                                 onChange={handleChange}
@@ -90,7 +99,12 @@ function CreateBtn() {
                                 <option value="Chandigarh University (CU)">Chandigarh University (CU)</option>
                                 <option value="Guru Nanak Dev University (GNDU)">Guru Nanak Dev University (GNDU)</option>
                                 <option value="Punjab Engineering College (PEC)">Punjab Engineering College (PEC)</option>
-                            </select>
+                            </select> */}
+
+                            <SelectCollege
+                                collegeName={formData.collegeName} // Pass the current value
+                                setFormData={setFormData} // Pass the state updater
+                            />
 
 
                             <input type="date" min={"2025-01-01"} max={new Date().toISOString().split("T")[0]} name="enrollmentDate" value={formData.enrollmentDate} onChange={handleChange} required className="w-full p-3 border rounded-lg" />
@@ -104,7 +118,7 @@ function CreateBtn() {
                                 {/* '21 days', '30 days */}
                             </select>
 
-                        {/* <input type="text" name="ReferenceNo" value={formData.ReferenceNo} onChange={handleChange} placeholder="Reference No" required className="w-full p-3 border rounded-lg" /> */}
+                            {/* <input type="text" name="ReferenceNo" value={formData.ReferenceNo} onChange={handleChange} placeholder="Reference No" required className="w-full p-3 border rounded-lg" /> */}
 
                             <div className="col-span-2 mt-4">
                                 <button type="submit" className="w-full bg-[#684df4] text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-600 transition duration-300">Submit</button>
@@ -118,4 +132,6 @@ function CreateBtn() {
     );
 }
 
+
 export default CreateBtn;
+

@@ -1,5 +1,6 @@
 const Letter = require('../model/Letter.model.js');
-const Counter = require('../model/Counter.model.js')
+const Counter = require('../model/Counter.model.js');
+const CollageModel = require('../model/Collage.model.js');
 
 
 function getAcademicYear() {
@@ -11,6 +12,7 @@ function getAcademicYear() {
 const hello = async (req, res) => {
     res.send('this is letter route ');
 }
+
 
 
 // create new Confirmation Letter api
@@ -39,22 +41,18 @@ const createLetter = async (req, res) => {
 
         const academicYear = getAcademicYear();
 
-<<<<<<< HEAD
+        // Initialize currentAcademicYear and refNoAtLast
+        let currentAcademicYear = academicYear;
+
+
         // Reset refNoAtLast if the academic year has changed
         if (academicYear !== currentAcademicYear) {
             currentAcademicYear = academicYear;
-            refNoAtLast = 100;
+
         }
 
-        
-
-        // NCPL/24-25/101
-        const finalReferenceNo = `NCPL/${academicYear}/${refNoAtLast}`;
-
-=======
         // Generate the final reference number using the counter value
         const finalReferenceNo = `NCPL/${academicYear}/${newCounterValue}`;
->>>>>>> e709b2800f234632a908f1ecb2313bf7598ec9ff
 
         // Create the new letter
         const letter = new Letter({
@@ -75,6 +73,40 @@ const createLetter = async (req, res) => {
         res.status(400).json({ success: false, message: error.message });
     }
 };
+
+
+
+const saveCollageName = async (req, res) => {
+    try {
+        const { collegeName } = req.body;
+
+        if (!collegeName) {
+            return res.status(400).json({ message: "collegeName is required" });
+        }
+
+        const collage = new CollageModel({ name: collegeName });
+        await collage.save();
+
+
+        res.status(201).json({ message: "College name saved successfully", collage });
+
+    } catch (error) {
+        res.status(500).json({ message: "Server error while saving collage name", error: error.message });
+    }
+}
+
+const getCollageNames = async (req, res) => {
+    try {
+        const collageNames = await CollageModel.find().collation({ locale: "en" }).sort({ name: 1 });
+        if (!collageNames) {
+            return res.status(404).json({ message: "No college names found" });
+        }
+        res.status(200).json({ collageNames });
+    } catch (error) {
+        res.status(500).json({ message: "Server error while fetching college names", error: error.message });
+    }
+}
+
 
 
 
@@ -132,20 +164,6 @@ const getSearchedLetter = async (req, res) => {
 
         let letter;
 
-        // const letter = await Letter.find({
-        //     $or: [
-        //         { name: { $regex: queryValue, $options: 'i' } },  
-        //         { FatherName: { $regex: queryValue, $options: 'i' } },  
-        //         { ReferenceNo: queryValue }  
-        //     ]
-        // });
-
-        // const letter = await Letter.find({
-        //     $or: [
-        //         { ReferenceNo: queryValue },
-        //         { $text: { $search: queryValue } }
-        //     ]
-        // });
 
         if (queryValue1 && queryValue2) {
             letter = await Letter.aggregate([
@@ -262,4 +280,6 @@ module.exports = {
     getSearchedLetter,
     updateLetter,
     deleteLetter,
+    saveCollageName,
+    getCollageNames
 };
