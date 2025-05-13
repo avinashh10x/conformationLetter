@@ -1,7 +1,6 @@
 const Letter = require('../model/Letter.model.js');
+const Counter = require('../model/Counter.model.js')
 
-let refNoAtLast = 300;
-let currentAcademicYear = getAcademicYear();
 
 function getAcademicYear() {
     const Year = new Date().getFullYear();
@@ -23,25 +22,41 @@ const createLetter = async (req, res) => {
             return res.status(400).json({ message: "All fields are required" });
         }
 
-        // Create new variables instead of reassigning const values
+        let counter = await Counter.findOne().sort({ _id: -1 });
+
+        if (!counter) {
+            counter = new Counter({ value: 100 }); // Start with 100 if no counter exists
+            await counter.save();
+        }
+
+        const newCounterValue = counter.value + 1;
+
+        await Counter.findByIdAndUpdate(counter._id, { value: newCounterValue });
+
+        // Format the name and father's name
         const formattedName = name.split(" ").map(word => word ? word[0].toUpperCase() + word.slice(1) : "").join(" ");
         const formattedFatherName = FatherName.split(" ").map(word => word ? word[0].toUpperCase() + word.slice(1) : "").join(" ");
 
-
-        // Get the current academic year
         const academicYear = getAcademicYear();
 
+<<<<<<< HEAD
         // Reset refNoAtLast if the academic year has changed
         if (academicYear !== currentAcademicYear) {
             currentAcademicYear = academicYear;
             refNoAtLast = 100;
         }
 
+        
 
         // NCPL/24-25/101
         const finalReferenceNo = `NCPL/${academicYear}/${refNoAtLast}`;
 
+=======
+        // Generate the final reference number using the counter value
+        const finalReferenceNo = `NCPL/${academicYear}/${newCounterValue}`;
+>>>>>>> e709b2800f234632a908f1ecb2313bf7598ec9ff
 
+        // Create the new letter
         const letter = new Letter({
             name: formattedName,
             FatherName: formattedFatherName,
@@ -56,7 +71,6 @@ const createLetter = async (req, res) => {
 
         await letter.save();
         res.status(201).json({ success: true, message: 'Letter created successfully', letter });
-        refNoAtLast++;
     } catch (error) {
         res.status(400).json({ success: false, message: error.message });
     }
@@ -143,8 +157,8 @@ const getSearchedLetter = async (req, res) => {
                                 {
                                     "phrase": {
                                         "query": queryValue1,
-                                        "path": "collegeName" , // Searching only in the collegeName field
-                                        "score": { "boost": { "value": 5 } } 
+                                        "path": "collegeName", // Searching only in the collegeName field
+                                        "score": { "boost": { "value": 5 } }
                                     }
                                 },
                                 {

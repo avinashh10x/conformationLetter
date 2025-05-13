@@ -9,7 +9,9 @@ const app = express();
 
 connectDb();
 
-app.use(cors());
+app.use(cors(),
+    express.urlencoded({ extended: true })
+    , express.json());
 app.use(express.json());
 
 // Routes

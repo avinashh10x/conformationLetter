@@ -21,7 +21,7 @@ const letterSchema = new mongoose.Schema({
     },
     gender: {
         type: String,
-        enum: ['male', 'female'],
+        enum: ['male', 'female', 'Male', 'Female'],
         required: [true, "Gender is required"]
     },
     courseName: {
@@ -54,8 +54,8 @@ const letterSchema = new mongoose.Schema({
 
 
 letterSchema.index({ name: 'text', FatherName: 'text' });
-letterSchema.index({courseName: 'text', collegeName: 'text'});
-letterSchema.index({collegeName: 'text'});
+letterSchema.index({ courseName: 'text', collegeName: 'text' });
+letterSchema.index({ collegeName: 'text' });
 
 
 module.exports = mongoose.model('Letter', letterSchema);
