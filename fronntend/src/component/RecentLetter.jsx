@@ -27,7 +27,7 @@ function RecentLetter() {
 
   const handleClick = (letter) => {
     setSelectedLetter(letter);
-    navigate("/letter");
+    navigate(`/letter/${encodeURIComponent(letter.ReferenceNo)}`);
   };
 
   const toggleMenu = (letterId) => {

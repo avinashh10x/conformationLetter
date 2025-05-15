@@ -6,6 +6,10 @@ import ToolBar from '../component/ToolBar';
 
 function ShowPdf() {
     const { selectedLetter } = useContext(MyContext);
+    console.log("Selected Letter in ShowPdf:", selectedLetter);
+
+    
+
     return (
         <>
             <ToolBar />

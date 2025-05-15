@@ -16,11 +16,13 @@ function App() {
       <Navbar />
       <Routes>
         <Route path='/' element={<HomePage />} />
-        <Route path='/letter' element={<ShowPdf />} />
+        <Route path='/letter/:RefID' element={<ShowPdf />} />
         <Route path='/allLetter' element={<AllLetters />} />
         <Route path='/result' element={<ResultPage />} />
         {/* <Route path='/filteredLetters' element={<FilteredPage />} /> */}
         {/* <Route path='/test' element={<ShowPdf />} /> */}
+
+
 
 
       </Routes>
