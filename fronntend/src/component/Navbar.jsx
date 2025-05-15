@@ -17,7 +17,7 @@ function Navbar() {
                 </div>
 
                 <div className='flex h-10 justify-center w-10 border-1 rounded-4xl items-center mr-2  space-x-5'>
-                    <CreateCollageBtn/>
+                   <CreateCollageBtn/>
                 </div>
             </nav>
         </>
