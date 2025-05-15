@@ -3,7 +3,7 @@ import React from 'react'
 import { saveCollageName } from '../services/LetterServices'
 import toast from 'react-hot-toast';
 
-function CreateCollageBtn() {
+export default function CreateCollegeBtn() {
     const [showModal, setShowModal] = React.useState(false);
     const [collegeName, setCollegeName] = React.useState('');
 
@@ -59,5 +59,3 @@ function CreateCollageBtn() {
         </>
     )
 }
-
-export default CreateCollageBtn

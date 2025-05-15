@@ -1,7 +1,9 @@
 import React from 'react'
 import { PlusCircleIcon, PlusIcon, UserIcon } from '@heroicons/react/24/solid'
 import logoImg from '../assets/novem_controls-removebg-preview.jpg';
-import CreateCollageBtn from './createCollageBtn';
+import CreateCollegeBtn from './CreateCollegeBtn';
+
+
 
 
 function Navbar() {
@@ -17,7 +19,7 @@ function Navbar() {
                 </div>
 
                 <div className='flex h-10 justify-center w-10 border-1 rounded-4xl items-center mr-2  space-x-5'>
-                   <CreateCollageBtn/>
+                    <CreateCollegeBtn />
                 </div>
             </nav>
         </>
