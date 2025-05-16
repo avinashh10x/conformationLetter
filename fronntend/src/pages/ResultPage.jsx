@@ -24,7 +24,7 @@ function ResultPage() {
 
     const handleClick = (letter) => {
         setSelectedLetter(letter);
-        navigate('/letter');
+        navigate(`/letter/${encodeURIComponent(letter.ReferenceNo)}`);
     }
 
     const toggleMenu = (letterId) => {
@@ -37,17 +37,10 @@ function ResultPage() {
             {/* <SearchBar/> */}
             {keyword && <h2 className="text-2xl text-center mb-6" >Search Results for: <span className='font-bold'> {keyword}</span></h2>}
             {collegeName || courseName && <h2 className="text-2xl text-center mb-6">Filtered by: <span className='font-bold'>{collegeName || ""} {courseName || ""}</span> </h2>}
-            {/* <h2 className="text-2xl text-center mb-6">
-                {keyword ?  `Search Results for: "${keyword}"` : ""}
 
-                {collegeName || courseName ? `Filtered by: ${collegeName || ""} ${courseName || ""}` : ""}
-
-            </h2> */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-gray-200 min-h-[calc(100vh-268px)] rounded-2xl p-4 gap-4">
-
-                {searchResults ? (
-
-                    searchResults.map((letter) => (
+            {searchResults.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-gray-200 min-h-[calc(100vh-268px)] rounded-2xl p-4 gap-4">
+                    {searchResults.map((letter) => (
                         <div
                             key={letter._id}
                             onClick={() => handleClick(letter)}
@@ -79,11 +72,13 @@ function ResultPage() {
                                 )}
                             </div>
                         </div>
-                    ))
-                ) : (
+                    ))}
+                </div>
+            ) : (
+                <div className=' w-full h-[calc(100vh-268px)] flex items-center justify-center rounded-2xl'>
                     <Loading />
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 

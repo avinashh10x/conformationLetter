@@ -37,9 +37,14 @@ function AllLetters() {
   }, [page]);
 
 
+  useEffect(() => {
+    document.title = "All Letters";
+  }, [])
+
+
   const handleClick = (letter) => {
     setSelectedLetter(letter);
-     navigate(`/letter/${encodeURIComponent(letter.ReferenceNo)}`);
+    navigate(`/letter/${encodeURIComponent(letter.ReferenceNo)}`);
   }
 
   const toggleMenu = (letterId) => {
@@ -47,14 +52,27 @@ function AllLetters() {
   };
 
 
+
   return (
     <div className="container mx-auto p-6">
       <div className="flex items-center justify-center">
-        <div className="flex mb-2 items-center justify-between w-full p-4">
-          <CreateBtn />
-          <h2 className="text-4xl uppercase font-bold text-center">All Letters</h2>
-          <FilterBtn />
+        <div className="w-full py-4 my-2">
+          <h2 className="text-4xl uppercase font-bold text-center mb-2 md:mb-0 md:hidden">
+            All Letters
+          </h2>
+
+          <div className="flex flex-raw gap-4 my-2 mt-5 items-center justify-between w-full">
+            <CreateBtn />
+
+            <h2 className="hidden md:block text-4xl uppercase font-bold text-center">
+              All Letters
+            </h2>
+
+            <FilterBtn />
+          </div>
         </div>
+
+
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 bg-gray-200 min-h-[calc(100vh-268px)] rounded-2xl p-4 gap-4">
