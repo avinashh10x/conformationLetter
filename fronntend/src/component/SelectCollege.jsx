@@ -3,7 +3,7 @@ import { getCollageNames } from '../services/LetterServices';
 import { useState } from 'react';
 import CreateCollegeBtn from './CreateCollegeBtn';
 
-function SelectCollege({ collegeName, setFormData }) {
+function SelectCollege({ collegeName, setFormData, fetchCollegeNames }) {
     const [collegeNames, setCollegeNames] = useState([]);
 
     async function fetchCollegeNames() {
@@ -26,6 +26,7 @@ function SelectCollege({ collegeName, setFormData }) {
 
     return (
         <>
+            {/* <CreateCollegeBtn onCollegeCreated={fetchCollegeNames} /> */}
             <select
                 name="collegeName"
                 value={collegeName}

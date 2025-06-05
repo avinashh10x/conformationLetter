@@ -6,6 +6,7 @@ import { PlusIcon } from '@heroicons/react/24/solid';
 import SelectCollege from './SelectCollege';
 import toast from 'react-hot-toast';
 import CreateCollegeBtn from './CreateCollegeBtn';
+import { getCollageNames } from '../services/LetterServices'; // Import getCollageNames
 
 function CreateBtn() {
     const [showModal, setShowModal] = useState(false);
@@ -45,6 +46,20 @@ function CreateBtn() {
         }
     };
 
+    const [collegeNames, setCollegeNames] = useState([]); // State to hold college names
+
+    const fetchCollegeNames = async () => {
+        try {
+            const collegeNameResult = await getCollageNames();
+            setCollegeNames(collegeNameResult.collageNames);
+        } catch (error) {
+            console.error("Error fetching college names:", error);
+        }
+    };
+
+    useEffect(() => {
+        fetchCollegeNames();
+    }, []);
 
     return (
         <div>
@@ -88,43 +103,47 @@ function CreateBtn() {
                             <input type="text" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="Course Name" required className="w-full p-3 border rounded-lg" />
 
                             <div className="flex w-full items-center gap-2">
+
                                 <div className="flex-1">
                                     <SelectCollege
                                         collegeName={formData.collegeName}
                                         setFormData={setFormData}
+                                        collegeNames={collegeNames}
+                                        fetchCollegeNames={fetchCollegeNames}
                                     />
                                 </div>
+                                <div className="">
+                                    <CreateCollegeBtn onCollegeAdded={fetchCollegeNames} />
+                                </div>
+                                </div>
 
-                                <CreateCollegeBtn />
-                            </div>
 
 
+                                <input type="date" min={"2025-01-01"} max={new Date().toISOString().split("T")[0]} name="enrollmentDate" value={formData.enrollmentDate} onChange={handleChange} required className="w-full p-3 border rounded-lg" />
 
-                            <input type="date" min={"2025-01-01"} max={new Date().toISOString().split("T")[0]} name="enrollmentDate" value={formData.enrollmentDate} onChange={handleChange} required className="w-full p-3 border rounded-lg" />
+                                <select name="trainingPeriod" value={formData.trainingPeriod} onChange={handleChange} className="w-full p-3 border rounded-lg">
+                                    <option value="" disabled>Select Training Period</option>
+                                    <option value="6 months">6 months</option>
+                                    <option value="45 days">45 days</option>
+                                    <option value="21 days">21 days</option>
+                                    <option value="30 days">30 days</option>
+                                    {/* '21 days', '30 days */}
+                                </select>
 
-                            <select name="trainingPeriod" value={formData.trainingPeriod} onChange={handleChange} className="w-full p-3 border rounded-lg">
-                                <option value="" disabled>Select Training Period</option>
-                                <option value="6 months">6 months</option>
-                                <option value="45 days">45 days</option>
-                                <option value="21 days">21 days</option>
-                                <option value="30 days">30 days</option>
-                                {/* '21 days', '30 days */}
-                            </select>
+                                {/* <input type="text" name="ReferenceNo" value={formData.ReferenceNo} onChange={handleChange} placeholder="Reference No" required className="w-full p-3 border rounded-lg" /> */}
 
-                            {/* <input type="text" name="ReferenceNo" value={formData.ReferenceNo} onChange={handleChange} placeholder="Reference No" required className="w-full p-3 border rounded-lg" /> */}
+                                <div className="col-span-2 mt-4">
+                                    <button type="submit" className="w-full bg-[#684df4] text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-600 transition duration-300">Submit</button>
+                                </div>
 
-                            <div className="col-span-2 mt-4">
-                                <button type="submit" className="w-full bg-[#684df4] text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-600 transition duration-300">Submit</button>
-                            </div>
-
-                            <div className="col-span-2 text-center mt-4">
-                                <p className="text-gray-600">
-                                    Want to create <span className="font-semibold text-gray-800">bulk</span>?{" "}
-                                    <Link to="/bulk-upload" className="text-[#684df4] font-medium hover:underline">
-                                        Click here
-                                    </Link>
-                                </p>
-                            </div>
+                                <div className="col-span-2 text-center mt-4">
+                                    <p className="text-gray-600">
+                                        Want to create in <span className="font-semibold text-gray-800">bulk</span>?{" "}
+                                        <Link to="/bulk-upload" className="text-[#684df4] font-medium hover:underline">
+                                            Click here
+                                        </Link>
+                                    </p>
+                                </div>
 
 
                         </form>

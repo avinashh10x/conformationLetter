@@ -3,7 +3,7 @@ import React from 'react';
 import { saveCollageName } from '../services/LetterServices';
 import toast from 'react-hot-toast';
 
-export default function CreateCollegeBtn() {
+export default function CreateCollegeBtn({ onCollegeAdded }) {
     const [showModal, setShowModal] = React.useState(false);
     const [collegeName, setCollegeName] = React.useState('');
 
@@ -12,22 +12,32 @@ export default function CreateCollegeBtn() {
             e.preventDefault();
             const response = await saveCollageName(collegeName);
             toast.success("College created successfully");
-            console.log(response);
             setCollegeName('');
+            setShowModal(false);
+            if (onCollegeAdded) {
+                onCollegeAdded();
+            }
         } catch (error) {
             console.error("Error creating college:", error);
             toast.error("Error creating college");
         }
     };
 
-    function openModel() {
+    function openModal() {
         setShowModal(true);
+
     }
 
     return (
         <div className="flex items-center gap-4">
+            <button
+                onClick={openModal}
+                className="flex items-center gap-1 text-white bg-[#684df4]  p-4 rounded-lg text-sm font-medium hover:bg-indigo-600 transition duration-300 shadow-md"
+                title="Add College"
+            >
+                <PlusIcon className="h-6 w-6 text-white" />
 
-            <PlusIcon onClick={openModel} className="h-6 w-6 cursor-pointer text-blue-600 hover:text-blue-800" title='Add College' />
+            </button>
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/50 backdrop-blur-sm" onClick={() => setShowModal(false)}>
                     <div
