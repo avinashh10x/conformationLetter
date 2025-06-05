@@ -16,7 +16,7 @@ const letterSchema = new mongoose.Schema({
     rollNo: {
         type: String,
         required: [true, "Roll Number is required"],
-        unique: true,
+        // unique: true,
         // match: [/^[A-Za-z0-9]+$/, "Roll number must be alphanumeric"]
     },
     gender: {

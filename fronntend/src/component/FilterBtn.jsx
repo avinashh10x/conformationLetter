@@ -1,6 +1,6 @@
 import { AdjustmentsHorizontalIcon } from '@heroicons/react/24/solid'
-import React, { useContext, useState } from 'react'
-import { getSearchedLetter } from '../services/LetterServices';
+import React, { useContext, useState, useEffect } from 'react'
+import { getSearchedLetter, getCollageNames, getCourseNames } from '../services/LetterServices';
 import { MyContext } from '../context/LetterContext';
 import { useNavigate } from "react-router-dom";
 
@@ -12,12 +12,41 @@ function FilterBtn() {
     const [error, setError] = useState(null);
     const [collegeName, setCollegeName] = useState('');
     const [courseName, setCourseName] = useState('');
+    const [collegeNames, setCollegeNames] = useState([]);
+    const [courseNames, setCourseNames] = useState([]);
+    const [loading, setLoading] = useState(false);
     const { setSearchResults } = useContext(MyContext)
 
     const navigate = useNavigate();
 
+    // Fetch college and course names when component mounts or modal opens
+    useEffect(() => {
+        if (showModal) {
+            fetchCollegeAndCourseNames();
+        }
+    }, [showModal]);
 
+    const fetchCollegeAndCourseNames = async () => {
+        setLoading(true);
+        try {
+            // Fetch college names
+            const collegeResponse = await getCollageNames();
+            if (collegeResponse && collegeResponse.collageNames) {
+                setCollegeNames(collegeResponse.collageNames);
+            }
 
+            // Fetch course names
+            const courseResponse = await getCourseNames();
+            if (courseResponse && courseResponse.courseNames) {
+                setCourseNames(courseResponse.courseNames);
+            }
+        } catch (error) {
+            console.error("Error fetching filter data:", error);
+            setError("Failed to load filter options. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleOverlayClick = (e) => {
         if (e.target === e.currentTarget) {
@@ -69,53 +98,55 @@ function FilterBtn() {
                     <div className="bg-white w-[500px] p-6 rounded-lg shadow-lg text-center">
                         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-700">Filter Letter</h2>
 
-                        <form onSubmit={handleFilterLetter} className="flex justify-between space-x-4">
-                            <div className="w-1/2" >
-                                <label className="block text-left text-gray-700">Name</label>
-                                <select
-                                    name="collegeName"
-                                    value={collegeName}
-                                    onChange={(e) => {
-                                        setCollegeName(e.target.value);
-                                        setError(null);
-                                    }}
-                                    className="w-full p-3 border rounded-lg text-lg"
-                                >
-                                    <option value="" disabled>Select College</option>
-                                    <option value="CT Institute of Engineering, Management & Technology">CT Institute of Engineering, Management & Technology</option>
-                                    <option value="Lovely Professional">Lovely Professional University (LPU)</option>
-                                    <option value="Chandigarh ">Chandigarh University (CU)</option>
-                                    <option value="Guru Nanak Dev University (GNDU)">Guru Nanak Dev University (GNDU)</option>
-                                    <option value="Punjab Engineering College (PEC)">Punjab Engineering College (PEC)</option>
-                                </select>
-                            </div>
+                        {loading ? (
+                            <div className="text-center py-4">Loading filter options...</div>
+                        ) : (
+                            <form onSubmit={handleFilterLetter} className="flex justify-between space-x-4">
+                                <div className="w-1/2" >
+                                    <label className="block text-left text-gray-700">College</label>
+                                    <select
+                                        name="collegeName"
+                                        value={collegeName}
+                                        onChange={(e) => {
+                                            setCollegeName(e.target.value);
+                                            setError(null);
+                                        }}
+                                        className="w-full p-3 border rounded-lg text-lg"
+                                    >
+                                        <option value="" disabled>Select College</option>
+                                        {collegeNames.map((college, index) => (
+                                            <option key={index} value={college}>{college}</option>
+                                        ))}
+                                    </select>
+                                </div>
 
-                            <div className="w-1/2">
-                                <label className="block text-left text-gray-700">Course</label>
-                                <select
-                                    name="course"
-                                    value={courseName}
-                                    onChange={(e) => {
-                                        setCourseName(e.target.value);
-                                        setError(null);
-                                    }}
-                                    className="w-full p-3 border rounded-lg text-lg"
+                                <div className="w-1/2">
+                                    <label className="block text-left text-gray-700">Course</label>
+                                    <select
+                                        name="course"
+                                        value={courseName}
+                                        onChange={(e) => {
+                                            setCourseName(e.target.value);
+                                            setError(null);
+                                        }}
+                                        className="w-full p-3 border rounded-lg text-lg"
+                                    >
+                                        <option value="" disabled>Select Course</option>
+                                        {courseNames.map((course, index) => (
+                                            <option key={index} value={course}>{course}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="mt-6 bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition"
                                 >
-                                    <option value="" disabled>Select Course</option>
-                                    <option value="web development">web development</option>
-                                    <option value="data science">data science</option>
-                                    <option value="AI & ML">AI & ML</option>
-                                </select>
-                            </div>
-                            <button
-                                type="submit"
-                                className="mt-6 bg-blue-500 text-white px-6 py-3 rounded-md hover:bg-blue-600 transition"
-                            // onClick={}
-                            >
-                                Submit
-                            </button>
-                        </form>
+                                    Submit
+                                </button>
+                            </form>
+                        )}
 
+                        {error && <p className="text-red-500 mt-4">{error}</p>}
                     </div>
                 </div>
             )}

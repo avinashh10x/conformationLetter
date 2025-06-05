@@ -1,10 +1,11 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { createLetter, getAllLetters } from '../services/LetterServices';
-import { data, useNavigate } from 'react-router-dom';
+import { data, Link, useNavigate } from 'react-router-dom';
 import { MyContext } from '../context/LetterContext';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import SelectCollege from './SelectCollege';
 import toast from 'react-hot-toast';
+import CreateCollegeBtn from './CreateCollegeBtn';
 
 function CreateBtn() {
     const [showModal, setShowModal] = useState(false);
@@ -37,14 +38,14 @@ function CreateBtn() {
             toast.success("Letter created successfully");
             setShowModal(false);
 
-            navigate('/letter');
+            navigate(`/letter/${encodeURIComponent(newLetter.ReferenceNo)}`);
         } catch (error) {
             console.error('Error creating letter:', error);
             toast.error("Error creating letter");
         }
     };
 
-  
+
     return (
         <div>
             <button
@@ -86,25 +87,17 @@ function CreateBtn() {
 
                             <input type="text" name="courseName" value={formData.courseName} onChange={handleChange} placeholder="Course Name" required className="w-full p-3 border rounded-lg" />
 
-                            {/* <select
-                                name="collegeName"
-                                value={formData.collegeName}
-                                onChange={handleChange}
-                                required
-                                className="w-full p-3 border rounded-lg"
-                            >
-                                <option value="" disabled>Select College</option>
-                                <option value="CT Institute of Engineering, Management & Technology">CT Institute of Engineering, Management & Technology</option>
-                                <option value="Lovely Professional University (LPU)">Lovely Professional University (LPU)</option>
-                                <option value="Chandigarh University (CU)">Chandigarh University (CU)</option>
-                                <option value="Guru Nanak Dev University (GNDU)">Guru Nanak Dev University (GNDU)</option>
-                                <option value="Punjab Engineering College (PEC)">Punjab Engineering College (PEC)</option>
-                            </select> */}
+                            <div className="flex w-full items-center gap-2">
+                                <div className="flex-1">
+                                    <SelectCollege
+                                        collegeName={formData.collegeName}
+                                        setFormData={setFormData}
+                                    />
+                                </div>
 
-                            <SelectCollege
-                                collegeName={formData.collegeName} // Pass the current value
-                                setFormData={setFormData} // Pass the state updater
-                            />
+                                <CreateCollegeBtn />
+                            </div>
+
 
 
                             <input type="date" min={"2025-01-01"} max={new Date().toISOString().split("T")[0]} name="enrollmentDate" value={formData.enrollmentDate} onChange={handleChange} required className="w-full p-3 border rounded-lg" />
@@ -123,6 +116,16 @@ function CreateBtn() {
                             <div className="col-span-2 mt-4">
                                 <button type="submit" className="w-full bg-[#684df4] text-white py-3 rounded-lg text-lg font-medium hover:bg-blue-600 transition duration-300">Submit</button>
                             </div>
+
+                            <div className="col-span-2 text-center mt-4">
+                                <p className="text-gray-600">
+                                    Want to create <span className="font-semibold text-gray-800">bulk</span>?{" "}
+                                    <Link to="/bulk-upload" className="text-[#684df4] font-medium hover:underline">
+                                        Click here
+                                    </Link>
+                                </p>
+                            </div>
+
 
                         </form>
                     </div>

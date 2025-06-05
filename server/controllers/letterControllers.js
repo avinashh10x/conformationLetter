@@ -1,7 +1,11 @@
 const Letter = require('../model/Letter.model.js');
 const Counter = require('../model/Counter.model.js');
 const CollageModel = require('../model/Collage.model.js');
-
+const XLSX = require('xlsx');
+const fs = require('fs');
+const path = require('path');
+const archiver = require('archiver');
+// PDF generation imports removed as PDF generation is now handled on the frontend
 
 function getAcademicYear() {
     const Year = new Date().getFullYear();
@@ -95,9 +99,32 @@ const saveCollageName = async (req, res) => {
     }
 }
 
+// Add this function after getCollageNames
+
+const getCourseNames = async (req, res) => {
+    try {
+        // Use distinct to get unique course names from the Letter collection
+        const courseNames = await Letter.distinct('courseName');
+
+        if (!courseNames || courseNames.length === 0) {
+            return res.status(404).json({ message: "No course names found" });
+        }
+
+        // Sort the course names alphabetically
+        courseNames.sort((a, b) => a.localeCompare(b));
+
+        res.status(200).json({ courseNames });
+    } catch (error) {
+        res.status(500).json({ message: "Server error while fetching course names", error: error.message });
+    }
+};
+
 const getCollageNames = async (req, res) => {
     try {
-        const collageNames = await CollageModel.find().collation({ locale: "en" }).sort({ name: 1 });
+        const collageNames1 = await CollageModel.find().collation({ locale: "en" }).sort({ name: 1 });
+        const collageNames2 = await Letter.distinct('collegeName');
+
+        let collageNames = [...new Set([...collageNames1.map(collage => collage.name), ...collageNames2])];
         if (!collageNames) {
             return res.status(404).json({ message: "No college names found" });
         }
@@ -169,7 +196,7 @@ const getSearchedLetter = async (req, res) => {
             letter = await Letter.aggregate([
                 {
                     "$search": {
-                        "index": "default",
+                        "index": "default_1",
                         "compound": {
                             "must": [
                                 {
@@ -189,12 +216,13 @@ const getSearchedLetter = async (req, res) => {
                         }
                     }
                 }
-            ]);
+            ]
+            )
         } else {
             letter = await Letter.aggregate([
                 {
                     "$search": {
-                        "index": "default",
+                        "index": "default_1",
                         "text": {
                             "query": queryValue1 || queryValue2,
                             "path": {
@@ -271,7 +299,117 @@ const deleteLetter = async (req, res) => {
 };
 
 
+const generateBulkCertificates = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
 
+        // Read Excel file
+        const workbook = XLSX.readFile(req.file.path);
+        const sheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[sheetName];
+        const data = XLSX.utils.sheet_to_json(worksheet);
+
+        // Validate required fields
+        const requiredFields = ['name', 'FatherName', 'rollNo', 'gender', 'courseName', 'collegeName', 'enrollmentDate', 'trainingPeriod'];
+        const missingFields = data.some(row => requiredFields.some(field => !row[field]));
+        if (missingFields) {
+            return res.status(400).json({
+                error: 'Excel file is missing required fields. Please ensure all required columns are present.'
+            });
+        }
+
+        // Get counter for reference numbers
+        let counter = await Counter.findOne().sort({ _id: -1 });
+        if (!counter) {
+            counter = new Counter({ value: 100 });
+            await counter.save();
+        }
+
+        const academicYear = getAcademicYear();
+        const certificates = [];
+        let currentCounter = counter.value;
+
+        // Process each row from Excel
+        for (const row of data) {
+            try {
+                // Format names
+                const formattedName = row.name.split(" ").map(word => word ? word[0].toUpperCase() + word.slice(1) : "").join(" ");
+                const formattedFatherName = row.FatherName.split(" ").map(word => word ? word[0].toUpperCase() + word.slice(1) : "").join(" ");
+
+                // Increment counter for each certificate
+                currentCounter++;
+                const finalReferenceNo = `NCPL/${academicYear}/${currentCounter}`;
+
+                // Create and save letter
+                const letter = new Letter({
+                    name: formattedName,
+                    FatherName: formattedFatherName,
+                    rollNo: row.rollNo,
+                    gender: row.gender,
+                    courseName: row.courseName,
+                    collegeName: row.collegeName,
+                    enrollmentDate: row.enrollmentDate,
+                    trainingPeriod: row.trainingPeriod,
+                    ReferenceNo: finalReferenceNo
+                });
+                const savedLetter = await letter.save();
+
+                // Push the full saved letter object (as plain JS object)
+                certificates.push(savedLetter.toObject());
+            } catch (rowError) {
+                console.error(`Error processing row:`, rowError);
+                // Continue with next row even if one fails
+            }
+        }
+
+        // Update the counter with the final value
+        await Counter.findByIdAndUpdate(counter._id, { value: currentCounter });
+
+        // Clean up the uploaded file
+        fs.unlinkSync(req.file.path);
+
+        res.status(200).json({
+            success: true,
+            message: `Successfully generated ${certificates.length} certificates`,
+            certificates
+        });
+
+    } catch (error) {
+        console.error('Error processing Excel file:', error);
+        res.status(500).json({ error: 'Error processing Excel file' });
+    }
+};
+
+// Helper function to calculate training end date
+function getTrainingEndDate(startDate, trainingPeriod) {
+    const date = new Date(startDate);
+    const months = parseInt(trainingPeriod);
+    date.setMonth(date.getMonth() + months);
+    return date.toLocaleDateString('en-GB');
+}
+
+// This endpoint is no longer needed as PDF generation is handled on the frontend
+const downloadCertificates = async (req, res) => {
+    try {
+        const { referenceNumbers } = req.query;
+        if (!referenceNumbers) {
+            return res.status(400).json({ error: 'No reference numbers specified' });
+        }
+
+        const refList = JSON.parse(referenceNumbers);
+        const letters = await Letter.find({ ReferenceNo: { $in: refList } });
+
+        res.status(200).json({
+            success: true,
+            letters
+        });
+    } catch (error) {
+        console.error('Error fetching letters:', error);
+        res.status(500).json({ error: 'Error fetching letters' });
+    }
+};
 
 module.exports = {
     hello,
@@ -280,6 +418,9 @@ module.exports = {
     getSearchedLetter,
     updateLetter,
     deleteLetter,
+    getCollageNames,
     saveCollageName,
-    getCollageNames
+    getCourseNames,
+    generateBulkCertificates,
+    downloadCertificates
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// const API_URL = "http://localhost:3000/api";
-const API_URL = "https://maqusad.onrender.com/api";
+const API_URL = "http://localhost:3000/api";
+// const API_URL = "https://maqusad.onrender.com/api";
 
 //  Get all Letters
 const getAllLetters = async (page = 1, limit = 5) => {
@@ -85,9 +85,19 @@ const getCollageNames = async () => {
     }
 };
 
-const saveCollageName = async (collageName) => {
+const getCourseNames = async () => {
     try {
-        const response = await axios.post(`${API_URL}/savecollage`, { collegeName: collageName });
+        const response = await axios.get(`${API_URL}/getAllCourses`);
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching course names:", error);
+        throw error;
+    }
+};
+
+const saveCollageName = async (collegeName) => {
+    try {
+        const response = await axios.post(`${API_URL}/savecollage`, { collegeName });
         return response.data;
     } catch (error) {
         console.error("Error saving college name:", error);
@@ -96,6 +106,21 @@ const saveCollageName = async (collageName) => {
 }
 
 
+// Upload Excel file for bulk letter generation
+const uploadExcelFile = async (formData) => {
+    try {
+        const response = await axios.post(`${API_URL}/upload-excel`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error uploading Excel file:", error);
+        throw error;
+    }
+};
+
 export {
     getAllLetters,
     createLetter,
@@ -103,5 +128,7 @@ export {
     updateLetter,
     deleteLetter,
     getCollageNames,
-    saveCollageName
+    getCourseNames,
+    saveCollageName,
+    uploadExcelFile
 };

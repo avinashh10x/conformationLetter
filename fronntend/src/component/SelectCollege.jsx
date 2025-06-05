@@ -35,7 +35,7 @@ function SelectCollege({ collegeName, setFormData }) {
             >
                 <option value="" disabled>Select College</option>
                 {collegeNames.map((college, index) => (
-                    <option key={index} value={college.name}>{college.name}</option>
+                    <option key={index} value={college}>{college}</option>
                 ))}
             </select>
         </>
